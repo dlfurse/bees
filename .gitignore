@@ -10,3 +10,9 @@
 *.lai
 *.la
 *.a
+
+# Build
+Build/
+build/
+Install/
+install/
