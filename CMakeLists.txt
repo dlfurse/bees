@@ -15,7 +15,7 @@ dmake_project_begin( Bees 0 1 0 )
 # bees dependencies #
 #####################
 
-dmake_dependency( Monarch 0 1 0 )
+dmake_dependency_declare( Monarch 0 1 0 )
 
 ################
 # bees library #
