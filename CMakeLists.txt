@@ -16,16 +16,19 @@ dmake_project_begin( Bees 0 1 0 )
 #####################
 
 dmake_dependency_declare( Monarch 0 1 0 )
+dmake_dependency_foreign_declare( Boost 1 52 0 )
 
 ################
 # bees library #
 ################
 
-dmake_library_declare( Core . )
-dmake_library_headers( Core
+dmake_library_declare( BeesCore . )
+dmake_library_headers( BeesCore
+    BFileStreamer.hh
     BAnalyticAssociate.hh
 )
-dmake_library_sources( Core
+dmake_library_sources( BeesCore
+    BFileStreamer.cc
     BAnalyticAssociate.cc
 )
 
@@ -33,9 +36,9 @@ dmake_library_sources( Core
 # bees executables #
 ####################
 
-dmake_executable_declare( Test . )
-dmake_executable_sources( Test
-    BeesTest.cc
+dmake_executable_declare( Bees . )
+dmake_executable_sources( Bees
+    Bees.cc
 )
 
 #####################

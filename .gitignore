@@ -16,3 +16,7 @@ Build/
 build/
 Install/
 install/
+
+# Eclipse
+.project
+.cproject

@@ -1,0 +1,7 @@
+{
+    "input_file": "/data/chirps.egg",
+    "segment_size": "16384",
+    "window_size": "8192",
+    "step_size": "8192"
+}
+
