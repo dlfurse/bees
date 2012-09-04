@@ -83,7 +83,7 @@ int main( const int tArgC, const char** tArgV )
             cout << "completed step <" << tCount << ">" << endl;
             break;
         }
-        if ( tCount % 100 == 0 )
+        if ( tCount % 1000 == 0 )
         {
             cout << "completed step <" << tCount << ">" << endl;
         }

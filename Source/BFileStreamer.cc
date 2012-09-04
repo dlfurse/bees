@@ -80,6 +80,8 @@ bool BFileStreamer::Execute()
 {
     if( fRecordRead == fRecordSize )
     {
+        cout << "reading new record..." << endl;
+
         fRecordRead = 0;
         fRecordPointerOne = fRecordOne;
         fRecordPointerTwo = fRecordTwo;
@@ -119,7 +121,7 @@ bool BFileStreamer::Execute()
 
         fOutputPointerOne = fOutputOne;
         fOutputPointerTwo = fOutputTwo;
-        for( tIndex = 0; tIndex < fStepSize; tIndex++ )
+        for( tIndex = 0; tIndex < fSegmentSize - fStepSize; tIndex++ )
         {
             *fOutputPointerOne = *(fOutputPointerOne + fStepSize);
             fOutputPointerOne++;
@@ -127,7 +129,7 @@ bool BFileStreamer::Execute()
             *fOutputPointerTwo = *(fOutputPointerTwo + fStepSize);
             fOutputPointerTwo++;
         }
-        for( tIndex = fStepSize; tIndex < fSegmentSize; tIndex++ )
+        for( tIndex = fSegmentSize - fStepSize; tIndex < fSegmentSize; tIndex++ )
         {
             *fOutputPointerOne = sConversionToVolts * ( double )( *fRecordPointerOne );
             fOutputPointerOne++;
