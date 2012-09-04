@@ -75,7 +75,7 @@ int main( const int tArgC, const char** tArgV )
     // go go go
 
     unsigned int tCount = 0;
-    while( true )
+    while( tCount != 2 )
     {
         tCount++;
         if( tFileStreamer.Execute() == false )
