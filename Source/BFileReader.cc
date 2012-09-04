@@ -87,15 +87,16 @@ bool BFileReader::Initialize()
 }
 bool BFileReader::Execute()
 {
-    size_t tIndex;
-
-    cout << "reading new record..." << endl;
+    if( fMonarch->ReadRecord() == false )
+    {
+        return false;
+    }
 
     fRecordPointerOne = fMonarchRecordOne->fDataPtr;
     fRecordPointerTwo = fMonarchRecordTwo->fDataPtr;
     fOutputPointerOne = fOutputOne;
     fOutputPointerTwo = fOutputTwo;
-    for( tIndex = 0; tIndex < fRecordSize; tIndex++ )
+    for( size_t tIndex = 0; tIndex < fRecordSize; tIndex++ )
     {
         *fOutputPointerOne = sConversionToVolts * (double) (*fRecordPointerOne);
         fOutputPointerOne++;
