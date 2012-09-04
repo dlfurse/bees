@@ -10,11 +10,9 @@ const double BFileReader::sConversionToVolts = 1. / 512.;
 
 BFileReader::BFileReader() :
     fFileName( "" ),
-    fSegmentSize( 0 ),
-    fStepSize( 0 ),
+    fRecordSize( 0 ),
     fMonarch( NULL ),
     fMonarchHeader( NULL ),
-    fRecordSize( 0 ),
     fMonarchRecordOne( NULL ),
     fRecordPointerOne( NULL ),
     fMonarchRecordTwo( NULL ),
@@ -34,12 +32,18 @@ BFileReader::~BFileReader()
         delete fMonarch;
         fMonarch = NULL;
     }
-}
 
-BFileReader* BFileReader::Construct( const ptree& /*aPropertyTree*/ )
-{
-    BFileReader* tFileReader = new BFileReader();
-    return tFileReader;
+    if( fOutputOne != NULL )
+    {
+        delete fOutputOne;
+        fOutputOne = NULL;
+    }
+
+    if( fOutputTwo != NULL )
+    {
+        delete fOutputTwo;
+        fOutputTwo = NULL;
+    }
 }
 
 void BFileReader::SetFileName( const string& aFileName )
@@ -47,25 +51,13 @@ void BFileReader::SetFileName( const string& aFileName )
     fFileName = aFileName;
     return;
 }
-void BFileReader::SetSegment( const size_t& aSegmentSize )
+double* BFileReader::GetOutputOne()
 {
-    fSegmentSize = aSegmentSize;
-    return;
+    return fOutputOne;
 }
-void BFileReader::SetStep( const size_t& aStepSize )
+double* BFileReader::GetOutputTwo()
 {
-    fStepSize = aStepSize;
-    return;
-}
-void BFileReader::SetOutputOne( double* aBuffer )
-{
-    fOutputOne = aBuffer;
-    return;
-}
-void BFileReader::SetOutputTwo( double* aBuffer )
-{
-    fOutputTwo = aBuffer;
-    return;
+    return fOutputTwo;
 }
 
 bool BFileReader::Initialize()
@@ -84,7 +76,9 @@ bool BFileReader::Initialize()
         return false;
     }
     fRecordSize = fMonarchHeader->GetRecordSize();
-    fRecordRead = fRecordSize;
+
+    fOutputOne = new double[ fRecordSize ];
+    fOutputTwo = new double[ fRecordSize ];
 
     fMonarchRecordOne = fMonarch->GetRecordOne();
     fMonarchRecordTwo = fMonarch->GetRecordTwo();
@@ -95,53 +89,21 @@ bool BFileReader::Execute()
 {
     size_t tIndex;
 
-    if( fRecordRead == fRecordSize )
+    cout << "reading new record..." << endl;
+
+    fRecordPointerOne = fMonarchRecordOne->fDataPtr;
+    fRecordPointerTwo = fMonarchRecordTwo->fDataPtr;
+    fOutputPointerOne = fOutputOne;
+    fOutputPointerTwo = fOutputTwo;
+    for( tIndex = 0; tIndex < fRecordSize; tIndex++ )
     {
-        cout << "reading new record..." << endl;
+        *fOutputPointerOne = sConversionToVolts * (double) (*fRecordPointerOne);
+        fOutputPointerOne++;
+        fRecordPointerOne++;
 
-        fRecordPointerOne = fMonarchRecordOne->fDataPtr;
-        fRecordPointerTwo = fMonarchRecordTwo->fDataPtr;
-        fOutputPointerOne = fOutputOne;
-        fOutputPointerTwo = fOutputTwo;
-        for( tIndex = 0; tIndex < fSegmentSize; tIndex++ )
-        {
-            *fOutputPointerOne = sConversionToVolts * (double) (*fRecordPointerOne);
-            fOutputPointerOne++;
-            fRecordPointerOne++;
-
-            *fOutputPointerTwo = sConversionToVolts * (double) (*fRecordPointerTwo);
-            fOutputPointerTwo++;
-            fRecordPointerTwo++;
-        }
-
-        fRecordRead = fSegmentSize;
-    }
-    else
-    {
-        //shift the current segment by the step size
-
-        fOutputPointerOne = fOutputOne;
-        fOutputPointerTwo = fOutputTwo;
-        for( tIndex = 0; tIndex < fSegmentSize - fStepSize; tIndex++ )
-        {
-            *fOutputPointerOne = *(fOutputPointerOne + fStepSize);
-            fOutputPointerOne++;
-
-            *fOutputPointerTwo = *(fOutputPointerTwo + fStepSize);
-            fOutputPointerTwo++;
-        }
-        for( tIndex = fSegmentSize - fStepSize; tIndex < fSegmentSize; tIndex++ )
-        {
-            *fOutputPointerOne = sConversionToVolts * (double) (*fRecordPointerOne);
-            fOutputPointerOne++;
-            fRecordPointerOne++;
-
-            *fOutputPointerTwo = sConversionToVolts * (double) (*fRecordPointerTwo);
-            fOutputPointerTwo++;
-            fRecordPointerTwo++;
-        }
-
-        fRecordRead = fRecordRead + fStepSize;
+        *fOutputPointerTwo = sConversionToVolts * (double) (*fRecordPointerTwo);
+        fOutputPointerTwo++;
+        fRecordPointerTwo++;
     }
 
     return true;

@@ -53,20 +53,10 @@ int main( const int tArgC, const char** tArgV )
     cout << "  *step: " << tStep << endl;
     cout << "  *segment: " << tSegment << endl;
 
-    // create and initialize arrays
-
-    double* tChannelOneVoltage = new double[ tSegment ];
-    double* tChannelTwoVoltage = new double[ tSegment ];
-
     // create and initialize file streamer
 
     BFileReader tFileStreamer;
     tFileStreamer.SetFileName( tInputName );
-    tFileStreamer.SetSegment( tSegment );
-    tFileStreamer.SetStep( tStep );
-    tFileStreamer.SetOutputOne( tChannelOneVoltage );
-    tFileStreamer.SetOutputTwo( tChannelTwoVoltage );
-
     if( tFileStreamer.Initialize() == false )
     {
         cout << "[error] could not initialize file streamer" << endl;
@@ -88,11 +78,6 @@ int main( const int tArgC, const char** tArgV )
             cout << "completed step <" << tCount << ">" << endl;
         }
     }
-
-    // clean up arrays
-
-    delete[] tChannelOneVoltage;
-    delete[] tChannelTwoVoltage;
 
     return 0;
 }

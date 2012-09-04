@@ -3,9 +3,6 @@
 
 #include "Monarch.hpp"
 
-#include <boost/property_tree/ptree.hpp>
-using boost::property_tree::ptree;
-
 #include <string>
 using std::string;
 
@@ -15,26 +12,20 @@ class BFileReader
         BFileReader();
         virtual ~BFileReader();
 
-        static BFileReader* Construct( const ptree& aPropertyTree );
-
         void SetFileName( const string& aFileName );
-        void SetSegment( const size_t& aSegmentSize );
-        void SetStep( const size_t& aStepSize );
-        void SetOutputOne( double* aBuffer );
-        void SetOutputTwo( double* aBuffer );
 
         bool Initialize();
         bool Execute();
 
+        double* GetOutputOne();
+        double* GetOutputTwo();
+
     private:
         string fFileName;
-        size_t fSegmentSize;
-        size_t fStepSize;
+        size_t fRecordSize;
 
         const Monarch* fMonarch;
         const MonarchHeader* fMonarchHeader;
-
-        size_t fRecordSize;
 
         const MonarchRecord* fMonarchRecordOne;
         const char* fRecordPointerOne;
