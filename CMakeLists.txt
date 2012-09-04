@@ -24,21 +24,19 @@ dmake_dependency_foreign_declare( Boost 1 52 0 )
 
 dmake_library_declare( BeesCore . )
 dmake_library_headers( BeesCore
-    BFileStreamer.hh
-    BAnalyticAssociate.hh
+    BFileReader.hh
 )
 dmake_library_sources( BeesCore
-    BFileStreamer.cc
-    BAnalyticAssociate.cc
+    BFileReader.cc
 )
 
 ####################
 # bees executables #
 ####################
 
-dmake_executable_declare( Bees . )
-dmake_executable_sources( Bees
-    Bees.cc
+dmake_executable_declare( TestBFileReader . )
+dmake_executable_sources( TestBFileReader
+    TestBFileReader.cc
 )
 
 #####################

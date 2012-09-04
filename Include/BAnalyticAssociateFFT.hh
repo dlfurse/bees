@@ -1,13 +1,13 @@
-#ifndef BANALYTICASSOCIATE_HH_
-#define BANALYTICASSOCIATE_HH_
+#ifndef BANALYTICASSOCIATEFFT_HH_
+#define BANALYTICASSOCIATEFFT_HH_
 
-#include <cstddef>
+#include "fftw3.h"
 
-class BAnalyticAssociate
+class BAnalyticAssociateFFT
 {
     public:
-        BAnalyticAssociate();
-        ~BAnalyticAssociate();
+        BAnalyticAssociateFFT();
+        ~BAnalyticAssociateFFT();
 
         void SetSegment( const size_t& aSegment );
         void SetWindow( const size_t& aWindow );

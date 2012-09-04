@@ -1,17 +1,17 @@
 #include <cmath>
 
-#include "BAnalyticAssociate.hh"
+#include "BAnalyticAssociateFFT.hh"
 
-const double BAnalyticAssociate::sPi = 3.1415926535898;
+const double BAnalyticAssociateFFT::sPi = 3.1415926535898;
 
-BAnalyticAssociate::BAnalyticAssociate() :
+BAnalyticAssociateFFT::BAnalyticAssociateFFT() :
     fWindow( 0 ),
     fInput( NULL ),
     fOutput( NULL ),
     fCoefficients( NULL )
 {
 }
-BAnalyticAssociate::~BAnalyticAssociate()
+BAnalyticAssociateFFT::~BAnalyticAssociateFFT()
 {
     if( fCoefficients != NULL )
     {
@@ -20,28 +20,28 @@ BAnalyticAssociate::~BAnalyticAssociate()
     }
 }
 
-void BAnalyticAssociate::SetSegment( const size_t& aSegment )
+void BAnalyticAssociateFFT::SetSegment( const size_t& aSegment )
 {
     fSegment = aSegment;
     return;
 }
-void BAnalyticAssociate::SetWindow( const size_t& aWindow )
+void BAnalyticAssociateFFT::SetWindow( const size_t& aWindow )
 {
     fWindow = aWindow;
     return;
 }
-void BAnalyticAssociate::SetInput( const double* anInput )
+void BAnalyticAssociateFFT::SetInput( const double* anInput )
 {
     fInput = anInput;
     return;
 }
-void BAnalyticAssociate::SetOutput( double* anOutput )
+void BAnalyticAssociateFFT::SetOutput( double* anOutput )
 {
     fOutput = anOutput;
     return;
 }
 
-bool BAnalyticAssociate::Initialize()
+bool BAnalyticAssociateFFT::Initialize()
 {
     fCoefficients = new double[fWindow];
     double tMax = (double) (fWindow);
@@ -54,7 +54,7 @@ bool BAnalyticAssociate::Initialize()
 
     return true;
 }
-bool BAnalyticAssociate::Execute()
+bool BAnalyticAssociateFFT::Execute()
 {
     fInputPointer = fInput;
     fOutputRealPointer = fOutput;

@@ -1,4 +1,4 @@
-#include "BFileStreamer.hh"
+#include "BFileReader.hh"
 
 #include <iostream>
 using std::cout;
@@ -6,28 +6,27 @@ using std::endl;
 
 #include <cstring>
 
-const double BFileStreamer::sConversionToVolts = 1. / 512.;
+const double BFileReader::sConversionToVolts = 1. / 512.;
 
-BFileStreamer::BFileStreamer() :
+BFileReader::BFileReader() :
     fFileName( "" ),
     fSegmentSize( 0 ),
     fStepSize( 0 ),
+    fMonarch( NULL ),
+    fMonarchHeader( NULL ),
+    fRecordSize( 0 ),
+    fMonarchRecordOne( NULL ),
+    fRecordPointerOne( NULL ),
+    fMonarchRecordTwo( NULL ),
+    fRecordPointerTwo( NULL ),
     fOutputOne( NULL ),
     fOutputPointerOne( NULL ),
     fOutputTwo( NULL ),
     fOutputPointerTwo( NULL ),
-    fMonarch( NULL ),
-    fMonarchHeader( NULL ),
-    fMonarchRecord( NULL ),
-    fRecordSize( 0 ),
-    fRecordRead( 0 ),
-    fRecordOne( NULL ),
-    fRecordPointerOne( NULL ),
-    fRecordTwo( NULL ),
-    fRecordPointerTwo( NULL )
+    fRecordRead( 0 )
 {
 }
-BFileStreamer::~BFileStreamer()
+BFileReader::~BFileReader()
 {
     if( fMonarch != NULL )
     {
@@ -35,46 +34,41 @@ BFileStreamer::~BFileStreamer()
         delete fMonarch;
         fMonarch = NULL;
     }
-
-    if( fRecordOne != NULL )
-    {
-        delete[] fRecordOne;
-        fRecordOne = NULL;
-    }
-    if( fRecordTwo != NULL )
-    {
-        delete[] fRecordTwo;
-        fRecordTwo = NULL;
-    }
 }
 
-void BFileStreamer::SetFileName( const string& aFileName )
+BFileReader* BFileReader::Construct( const ptree& /*aPropertyTree*/ )
+{
+    BFileReader* tFileReader = new BFileReader();
+    return tFileReader;
+}
+
+void BFileReader::SetFileName( const string& aFileName )
 {
     fFileName = aFileName;
     return;
 }
-void BFileStreamer::SetSegment( const size_t& aSegmentSize )
+void BFileReader::SetSegment( const size_t& aSegmentSize )
 {
     fSegmentSize = aSegmentSize;
     return;
 }
-void BFileStreamer::SetStep( const size_t& aStepSize )
+void BFileReader::SetStep( const size_t& aStepSize )
 {
     fStepSize = aStepSize;
     return;
 }
-void BFileStreamer::SetOutputOne( double* aBuffer )
+void BFileReader::SetOutputOne( double* aBuffer )
 {
     fOutputOne = aBuffer;
     return;
 }
-void BFileStreamer::SetOutputTwo( double* aBuffer )
+void BFileReader::SetOutputTwo( double* aBuffer )
 {
     fOutputTwo = aBuffer;
     return;
 }
 
-bool BFileStreamer::Initialize()
+bool BFileReader::Initialize()
 {
     fMonarch = Monarch::OpenForReading( fFileName );
     if( fMonarch == NULL )
@@ -89,37 +83,24 @@ bool BFileStreamer::Initialize()
         cout << "[error] could not read header from egg file <" << fFileName << ">" << endl;
         return false;
     }
-    fMonarchRecord = fMonarch->GetRecord();
     fRecordSize = fMonarchHeader->GetRecordSize();
     fRecordRead = fRecordSize;
-    fRecordOne = new char[fRecordSize];
-    fRecordTwo = new char[fRecordSize];
+
+    fMonarchRecordOne = fMonarch->GetRecordOne();
+    fMonarchRecordTwo = fMonarch->GetRecordTwo();
 
     return true;
 }
-bool BFileStreamer::Execute()
+bool BFileReader::Execute()
 {
+    size_t tIndex;
+
     if( fRecordRead == fRecordSize )
     {
         cout << "reading new record..." << endl;
 
-        fRecordPointerOne = fRecordOne;
-        fRecordPointerTwo = fRecordTwo;
-
-        if( fMonarch->ReadRecord() == false )
-        {
-            return false;
-        }
-        memcpy( fRecordOne, fMonarchRecord->fDataPtr, fRecordSize );
-
-        if( fMonarch->ReadRecord() == false )
-        {
-            return false;
-        }
-        memcpy( fRecordTwo, fMonarchRecord->fDataPtr, fRecordSize );
-
-        size_t tIndex;
-
+        fRecordPointerOne = fMonarchRecordOne->fDataPtr;
+        fRecordPointerTwo = fMonarchRecordTwo->fDataPtr;
         fOutputPointerOne = fOutputOne;
         fOutputPointerTwo = fOutputTwo;
         for( tIndex = 0; tIndex < fSegmentSize; tIndex++ )
@@ -137,9 +118,7 @@ bool BFileStreamer::Execute()
     }
     else
     {
-        fRecordRead = fRecordRead + fStepSize;
-
-        size_t tIndex;
+        //shift the current segment by the step size
 
         fOutputPointerOne = fOutputOne;
         fOutputPointerTwo = fOutputTwo;
@@ -161,6 +140,8 @@ bool BFileStreamer::Execute()
             fOutputPointerTwo++;
             fRecordPointerTwo++;
         }
+
+        fRecordRead = fRecordRead + fStepSize;
     }
 
     return true;
