@@ -75,7 +75,7 @@ int main( const int tArgC, const char** tArgV )
     // go go go
 
     unsigned int tCount = 0;
-    while( tCount != 2 )
+    while( true )
     {
         tCount++;
         if( tFileStreamer.Execute() == false )
@@ -83,7 +83,7 @@ int main( const int tArgC, const char** tArgV )
             cout << "completed step <" << tCount << ">" << endl;
             break;
         }
-        if ( tStep % 100 == 0 )
+        if ( tCount % 100 == 0 )
         {
             cout << "completed step <" << tCount << ">" << endl;
         }
