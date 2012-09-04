@@ -98,13 +98,8 @@ bool BFileReader::Execute()
     fOutputPointerTwo = fOutputTwo;
     for( size_t tIndex = 0; tIndex < fRecordSize; tIndex++ )
     {
-        *fOutputPointerOne = sConversionToVolts * (double) (*fRecordPointerOne);
-        fOutputPointerOne++;
-        fRecordPointerOne++;
-
-        *fOutputPointerTwo = sConversionToVolts * (double) (*fRecordPointerTwo);
-        fOutputPointerTwo++;
-        fRecordPointerTwo++;
+        fOutputPointerOne[tIndex] = sConversionToVolts * (double)( fRecordPointerOne[tIndex] );
+        fOutputPointerTwo[tIndex] = sConversionToVolts * (double)( fRecordPointerTwo[tIndex] );
     }
 
     return true;
