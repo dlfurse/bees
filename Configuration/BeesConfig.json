@@ -9,6 +9,6 @@
     "wigner_ville_window": "8192",
     
     "#COMMENT": "step is the size in bytes the algorithm advances each step",
-    "step": "8192"
+    "step": "2097152"
 }
 
