@@ -42,26 +42,28 @@ int main( const int tArgC, const char** tArgV )
     read_json( tPropertyFile, tPropertyTree );
 
     string tInputName = tPropertyTree.get< string >( "input_file" );
-    size_t tSegmentSize = tPropertyTree.get< size_t >( "segment_size" );
-    size_t tWindowSize = tPropertyTree.get< size_t >( "window_size" );
-    size_t tStepSize = tPropertyTree.get< size_t >( "step_size" );
+    size_t tAnalyticAssociateWindow = tPropertyTree.get< size_t >( "analytic_associate_window" );
+    size_t tWignerVilleWindow = tPropertyTree.get< size_t >( "wigner_ville_window" );
+    size_t tStep = tPropertyTree.get< size_t >( "step" );
+    size_t tSegment = tAnalyticAssociateWindow + tWignerVilleWindow;
 
     cout << "  *input file: " << tInputName << endl;
-    cout << "  *segment size: " << tSegmentSize << endl;
-    cout << "  *window size: " << tWindowSize << endl;
-    cout << "  *step size: " << tStepSize << endl;
+    cout << "  *analytic associate window: " << tAnalyticAssociateWindow << endl;
+    cout << "  *wigner-ville window: " << tWignerVilleWindow << endl;
+    cout << "  *step: " << tStep << endl;
+    cout << "  *segment: " << tSegment << endl;
 
     // create and initialize arrays
 
-    double* tChannelOneVoltage = new double[ tSegmentSize ];
-    double* tChannelTwoVoltage = new double[ tSegmentSize ];
+    double* tChannelOneVoltage = new double[ tSegment ];
+    double* tChannelTwoVoltage = new double[ tSegment ];
 
     // create and initialize file streamer
 
     BFileStreamer tFileStreamer;
     tFileStreamer.SetFileName( tInputName );
-    tFileStreamer.SetSegmentSize( tSegmentSize );
-    tFileStreamer.SetStepSize( tStepSize );
+    tFileStreamer.SetSegment( tSegment );
+    tFileStreamer.SetStep( tStep );
     tFileStreamer.SetOutputOne( tChannelOneVoltage );
     tFileStreamer.SetOutputTwo( tChannelTwoVoltage );
 
@@ -72,17 +74,18 @@ int main( const int tArgC, const char** tArgV )
 
     // go go go
 
-    unsigned int tStep;
+    unsigned int tCount = 0;
     while( true )
     {
+        tCount++;
         if( tFileStreamer.Execute() == false )
         {
-            cout << "completed step <" << tStep << ">" << endl;
+            cout << "completed step <" << tCount << ">" << endl;
             break;
         }
         if ( tStep % 100 == 0 )
         {
-            cout << "completed step <" << tStep << ">" << endl;
+            cout << "completed step <" << tCount << ">" << endl;
         }
     }
 

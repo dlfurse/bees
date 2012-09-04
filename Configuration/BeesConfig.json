@@ -1,7 +1,14 @@
 {
+    "#COMMENT": "input_file is the input file from the digitizer",
     "input_file": "/data/chirps.egg",
-    "segment_size": "16384",
-    "window_size": "8192",
-    "step_size": "8192"
+    
+    "#COMMENT": "analytic_associate_window is the window size used in computing the analytic associate",
+    "analytic_associate_window": "8192",
+    
+    "#COMMENT": "wigner_ville_window is the size of the window used in computing the wigner-ville distribution",
+    "wigner_ville_window": "8192",
+    
+    "#COMMENT": "step is the size in bytes the algorithm advances each step",
+    "step": "8192"
 }
 

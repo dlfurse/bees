@@ -13,8 +13,8 @@ class BFileStreamer
         virtual ~BFileStreamer();
 
         void SetFileName( const string& aFileName );
-        void SetSegmentSize( const size_t& aSegmentSize );
-        void SetStepSize( const size_t& aStepSize );
+        void SetSegment( const size_t& aSegmentSize );
+        void SetStep( const size_t& aStepSize );
         void SetOutputOne( double* aBuffer );
         void SetOutputTwo( double* aBuffer );
 

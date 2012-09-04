@@ -32,12 +32,12 @@ void BFileStreamer::SetFileName( const string& aFileName )
     fFileName = aFileName;
     return;
 }
-void BFileStreamer::SetSegmentSize( const size_t& aSegmentSize )
+void BFileStreamer::SetSegment( const size_t& aSegmentSize )
 {
     fSegmentSize = aSegmentSize;
     return;
 }
-void BFileStreamer::SetStepSize( const size_t& aStepSize )
+void BFileStreamer::SetStep( const size_t& aStepSize )
 {
     fStepSize = aStepSize;
     return;
