@@ -8,20 +8,27 @@ class BAnalyticAssociate
     public:
         BAnalyticAssociate();
         ~BAnalyticAssociate();
-        
-        void SetLength( const size_t& aLength );
-        void SetPeriod( const double& aPeriod );
-        
-        void Initialize();
-        void Execute( const double* aRealSignal, const double* anAssociateSignal );
-        
+
+        void SetSegment( const size_t& aSegment );
+        void SetWindow( const size_t& aWindow );
+        void SetInput( const double* anInput );
+        void SetOutput( double* anOutput );
+
+        bool Initialize();
+        bool Execute();
+
     private:
-        typedef enum
-        {
-            eUninitialized,
-            eInitialized
-        } State;
-        State fState;
-};    
+        size_t fSegment;
+        size_t fWindow;
+        const double* fInput;
+        double* fOutput;
+
+        double* fCoefficients;
+        const double* fInputPointer;
+        const double* fWindowPointer;
+        double* fOutputRealPointer;
+        double* fOutputImaginaryPointer;
+        static const double sPi;
+};
 
 #endif

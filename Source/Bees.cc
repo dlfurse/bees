@@ -1,4 +1,5 @@
 #include "BFileStreamer.hh"
+#include "BAnalyticAssociate.hh"
 
 #include <boost/property_tree/ptree.hpp>
 using boost::property_tree::ptree;
@@ -58,6 +59,9 @@ int main( const int tArgC, const char** tArgV )
     double* tChannelOneVoltage = new double[ tSegment ];
     double* tChannelTwoVoltage = new double[ tSegment ];
 
+    double* tChannelOneAnalyticAssociate = new double[ 2 * tWignerVilleWindow ];
+    double* tChannelTwoAnalyticAssociate = new double[ 2 * tWignerVilleWindow ];
+
     // create and initialize file streamer
 
     BFileStreamer tFileStreamer;
@@ -72,10 +76,36 @@ int main( const int tArgC, const char** tArgV )
         cout << "[error] could not initialize file streamer" << endl;
     }
 
+    // create and initialize analytic associate for channel one
+
+    BAnalyticAssociate tAnalyticAssociateOne;
+    tAnalyticAssociateOne.SetSegment( tWignerVilleWindow );
+    tAnalyticAssociateOne.SetWindow( tAnalyticAssociateWindow );
+    tAnalyticAssociateOne.SetInput( tChannelOneVoltage );
+    tAnalyticAssociateOne.SetOutput( tChannelOneAnalyticAssociate );
+
+    if( tAnalyticAssociateOne.Initialize() == false )
+    {
+        cout << "[error] could not initialize analytic associate one" << endl;
+    }
+
+    // create and initialize analytic associate for channel two
+
+    BAnalyticAssociate tAnalyticAssociateTwo;
+    tAnalyticAssociateTwo.SetSegment( tWignerVilleWindow );
+    tAnalyticAssociateTwo.SetWindow( tAnalyticAssociateWindow );
+    tAnalyticAssociateTwo.SetInput( tChannelTwoVoltage );
+    tAnalyticAssociateTwo.SetOutput( tChannelTwoAnalyticAssociate );
+
+    if( tAnalyticAssociateTwo.Initialize() == false )
+    {
+        cout << "[error] could not initialize analytic associate two" << endl;
+    }
+
     // go go go
 
     unsigned int tCount = 0;
-    while( true )
+    while( tCount != 1000 )
     {
         tCount++;
         if( tFileStreamer.Execute() == false )
@@ -83,6 +113,8 @@ int main( const int tArgC, const char** tArgV )
             cout << "completed step <" << tCount << ">" << endl;
             break;
         }
+        tAnalyticAssociateOne.Execute();
+        tAnalyticAssociateTwo.Execute();
         if ( tCount % 1000 == 0 )
         {
             cout << "completed step <" << tCount << ">" << endl;
