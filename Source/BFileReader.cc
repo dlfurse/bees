@@ -92,8 +92,8 @@ bool BFileReader::Execute()
     }
 
     register const double tConversion = sConversionToVolts;
-    register char* tRecordPointerOne = fMonarchRecordOne->fDataPtr;
-    register char* tRecordPointerTwo = fMonarchRecordTwo->fDataPtr;
+    register const char* tRecordPointerOne = fMonarchRecordOne->fDataPtr;
+    register const char* tRecordPointerTwo = fMonarchRecordTwo->fDataPtr;
     register double* tOutputPointerOne = fOutputOne;
     register double* tOutputPointerTwo = fOutputTwo;
     for( size_t tIndex = 0; tIndex < fRecordSize; tIndex++ )
