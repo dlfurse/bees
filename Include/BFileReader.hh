@@ -39,8 +39,6 @@ class BFileReader
         double* fOutputTwo;
         double* fOutputPointerTwo;
 
-        size_t fRecordRead;
-
         static const double sConversionToVolts;
 };
 

@@ -25,9 +25,13 @@ dmake_dependency_foreign_declare( Boost 1 52 0 )
 dmake_library_declare( BeesCore . )
 dmake_library_headers( BeesCore
     BFileReader.hh
+    BFileWriter.hh
+    BWhiteNoiseGenerator.hh
 )
 dmake_library_sources( BeesCore
     BFileReader.cc
+    BFileWriter.cc
+    BWhiteNoiseGenerator.cc
 )
 
 ####################

@@ -20,8 +20,7 @@ BFileReader::BFileReader() :
     fOutputOne( NULL ),
     fOutputPointerOne( NULL ),
     fOutputTwo( NULL ),
-    fOutputPointerTwo( NULL ),
-    fRecordRead( 0 )
+    fOutputPointerTwo( NULL )
 {
 }
 BFileReader::~BFileReader()
@@ -75,8 +74,8 @@ bool BFileReader::Initialize()
         cout << "[error] could not read header from egg file <" << fFileName << ">" << endl;
         return false;
     }
-    fRecordSize = fMonarchHeader->GetRecordSize();
 
+    fRecordSize = fMonarchHeader->GetRecordSize();
     fOutputOne = new double[ fRecordSize ];
     fOutputTwo = new double[ fRecordSize ];
 
@@ -92,14 +91,15 @@ bool BFileReader::Execute()
         return false;
     }
 
-    fRecordPointerOne = fMonarchRecordOne->fDataPtr;
-    fRecordPointerTwo = fMonarchRecordTwo->fDataPtr;
-    fOutputPointerOne = fOutputOne;
-    fOutputPointerTwo = fOutputTwo;
+    register const double tConversion = sConversionToVolts;
+    register char* tRecordPointerOne = fMonarchRecordOne->fDataPtr;
+    register char* tRecordPointerTwo = fMonarchRecordTwo->fDataPtr;
+    register double* tOutputPointerOne = fOutputOne;
+    register double* tOutputPointerTwo = fOutputTwo;
     for( size_t tIndex = 0; tIndex < fRecordSize; tIndex++ )
     {
-        fOutputPointerOne[tIndex] = sConversionToVolts * (double)( fRecordPointerOne[tIndex] );
-        fOutputPointerTwo[tIndex] = sConversionToVolts * (double)( fRecordPointerTwo[tIndex] );
+        tOutputPointerOne[tIndex] = tRecordPointerOne[tIndex] * tConversion;
+        tOutputPointerTwo[tIndex] = tRecordPointerTwo[tIndex] * tConversion;
     }
 
     return true;
