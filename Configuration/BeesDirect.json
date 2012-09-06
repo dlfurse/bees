@@ -12,7 +12,7 @@
     "noise":
     {
         "#COMMENT": "noise power in dBm",
-        "power_dBm": "-10"
+        "power_dBm": "-10000"
     },
 
     "#COMMENT": "chirp parameters",
@@ -38,10 +38,10 @@
     "tone":
     {    
         "#COMMENT": "chirp power in dBm",
-        "power_dBm": "-7",
+        "power_dBm": "-10",
         
         "#COMMENT": "tone frequency in MHz",
-        "frequency_MHz": "9.8174"
+        "frequency_MHz": "100.0"
     },
     
     "#COMMENT": "parameters for record-averaged short time discrete fourier transform",

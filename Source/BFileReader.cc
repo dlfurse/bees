@@ -96,18 +96,18 @@ bool BFileReader::Execute()
         return false;
     }
 
-    register const char* tRecordOne = fMonarchRecordOne->fDataPtr;
-    register const char* tRecordTwo = fMonarchRecordTwo->fDataPtr;
+    register const DataType* tRecordOne = fMonarchRecordOne->fDataPtr;
+    register const DataType* tRecordTwo = fMonarchRecordTwo->fDataPtr;
     register double* tChannelOne = fChannelOne;
     register double* tChannelTwo = fChannelTwo;
 
-    register double tSlope = 1. / 508.;
-    register double tOffset = -.25 - .5 * tSlope;
+    register double tSlope = 1. / 510.;
+    register double tOffset = -.25;
 
     for( size_t tIndex = 0; tIndex < fSize; tIndex++ )
     {
-        tChannelOne[tIndex] = tOffset + tRecordOne[tIndex] * tSlope;
-        tChannelTwo[tIndex] = tOffset + tRecordTwo[tIndex] * tSlope;
+        tChannelOne[tIndex] = tOffset + (double)(tRecordOne[tIndex]) * tSlope;
+        tChannelTwo[tIndex] = tOffset + (double)(tRecordTwo[tIndex]) * tSlope;
     }
 
     return true;

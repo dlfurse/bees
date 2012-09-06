@@ -83,7 +83,7 @@ int main( const int tArgC, const char** tArgV )
     // go go go
 
     unsigned int tCount = 0;
-    while( tCount != 1 )
+    while( true )
     {
         if( tFileReader.Execute() == false )
         {
@@ -102,10 +102,11 @@ int main( const int tArgC, const char** tArgV )
     ofstream tStream("./Bees.pwr");
     double* tOutputOne = tFourierTransform.OutputOne();
     double* tOutputTwo = tFourierTransform.OutputTwo();
+    double tNormalization = 2.0 * ( 1. / (double)(tCount*floor((double)(tSize)/(double)(tLength))) ) * ( 1. / (double)( tLength * tLength ) ) * ( 1. / 50. );
     size_t tIndex;
-    for( tIndex = 0; tIndex < tLength; tIndex++ )
+    for( tIndex = 0; tIndex < tLength / 2; tIndex++ )
     {
-        tStream << tIndex * (1./(tLength * tPeriod)) << " " << tOutputOne[tIndex] << "\n";
+        tStream << tIndex * (1./(tLength * tPeriod)) << " " << tNormalization * tOutputOne[tIndex] << "\n";
     }
 //    tStream << "\n\n";
 //    for( tIndex = 0; tIndex < tSize; tIndex++ )

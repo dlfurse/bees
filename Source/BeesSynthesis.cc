@@ -151,7 +151,7 @@ int main( const int tArgC, const char** tArgV )
     while( tIndex < tCount )
     {
         tWhiteNoiseGenerator.Execute();
-        //tLinearChirpGenerator.Execute();
+        tLinearChirpGenerator.Execute();
         tToneGenerator.Execute();
         tFileWriter.Execute();
 

@@ -92,27 +92,27 @@ bool BFileWriter::Initialize()
     fMonarchRecordTwo->fCId = 2;
 
     fChannelOne = new double[fSize];
-    memset( fChannelOne, 0, sizeof(double) * fSize );
-
     fChannelTwo = new double[fSize];
+
+    memset( fChannelOne, 0, sizeof(double) * fSize );
     memset( fChannelTwo, 0, sizeof(double) * fSize );
 
     return true;
 }
 bool BFileWriter::Execute()
 {
-    register char* tRecordOne = fMonarchRecordOne->fDataPtr;
-    register char* tRecordTwo = fMonarchRecordTwo->fDataPtr;
+    register DataType* tRecordOne = fMonarchRecordOne->fDataPtr;
+    register DataType* tRecordTwo = fMonarchRecordTwo->fDataPtr;
     register double* tChannelOne = fChannelOne;
     register double* tChannelTwo = fChannelTwo;
 
-    register double tSlope = 508.;
+    register double tSlope = 510.;
     register double tOffset = .25;
 
     for( size_t tIndex = 0; tIndex < fSize; tIndex++ )
     {
-        tRecordOne[tIndex] = (char) (ceil( tSlope * (tChannelOne[tIndex] + tOffset) ));
-        tRecordOne[tIndex] = (char) (ceil( tSlope * (tChannelTwo[tIndex] + tOffset) ));
+        tRecordOne[tIndex] = (DataType) (round( tSlope * (tChannelOne[tIndex] + tOffset) ));
+        tRecordTwo[tIndex] = (DataType) (round( tSlope * (tChannelTwo[tIndex] + tOffset) ));
     }
 
     if( fMonarch->WriteRecord() == false )

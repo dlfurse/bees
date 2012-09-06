@@ -104,8 +104,8 @@ bool BFourierTransform::Execute()
 
         for( tIndex = 0; tIndex < fLength; tIndex++ )
         {
-            fOutputOne[tIndex] += (fOutOne[tIndex][0] * fOutOne[tIndex][0] + fOutOne[tIndex][1] * fOutOne[tIndex][1]) / (tFold);
-            fOutputTwo[tIndex] += (fOutTwo[tIndex][0] * fOutTwo[tIndex][0] + fOutTwo[tIndex][1] * fOutTwo[tIndex][1]) / (tFold);
+            fOutputOne[tIndex] += fOutOne[tIndex][0] * fOutOne[tIndex][0] + fOutOne[tIndex][1] * fOutOne[tIndex][1];
+            fOutputTwo[tIndex] += fOutTwo[tIndex][0] * fOutTwo[tIndex][0] + fOutTwo[tIndex][1] * fOutTwo[tIndex][1];
         }
     }
 

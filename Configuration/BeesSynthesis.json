@@ -6,16 +6,16 @@
     "count": "1",
     
     "#COMMENT": "output frequency in MHz",
-    "frequency_MHz": "1024.0",
+    "frequency_MHz": "500.0",
     
     "#COMMENT": "record size in MB",
-    "size_MB": "64",
+    "size_MB": "4",
     
     "#COMMENT": "noise parameters",
     "noise":
     {
         "#COMMENT": "noise power in dBm",
-        "power_dBm": "-10"
+        "power_dBm": "-10000"
     },
 
     "#COMMENT": "chirp parameters",
@@ -40,11 +40,11 @@
     "#COMMENT": "tone parameters",
     "tone":
     {    
-        "#COMMENT": "chirp power in dBm",
-        "power_dBm": "-7",
+        "#COMMENT": "tone power in dBm",
+        "power_dBm": "-10",
         
         "#COMMENT": "tone frequency in MHz",
-        "frequency_MHz": "9.8174"
+        "frequency_MHz": "100.1234567891234"
     }
 }
 

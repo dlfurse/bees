@@ -5,7 +5,7 @@
     "#COMMENT": "parameters for record-averaged short time discrete fourier transform",
     "fourier":
     {
-        "length": "131072"
+        "length": "1024"
     }
 }
 
