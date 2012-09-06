@@ -13,31 +13,28 @@ class BFileWriter
         virtual ~BFileWriter();
 
         void SetFileName( const string& aFileName );
-        void SetRecordSize( const size_t& aSize );
-        void SetInputOne( double* anInput );
-        void SetInputTwo( double* anInput);
 
-        bool Initialize();
+        void SetSize( const size_t& aSize );
+        void SetPeriod( const double& aPeriod );
+
         bool Execute();
+        bool Initialize();
+
+        double* ChannelOne();
+        double* ChannelTwo();
 
     private:
         string fFileName;
-        size_t fRecordSize;
+        size_t fSize;
+        double fPeriod;
 
         Monarch* fMonarch;
         MonarchHeader* fMonarchHeader;
-
         MonarchRecord* fMonarchRecordOne;
-        char* fRecordPointerOne;
-
         MonarchRecord* fMonarchRecordTwo;
-        char* fRecordPointerTwo;
 
-        double* fInputOne;
-        double* fInputPointerOne;
-
-        double* fInputTwo;
-        double* fInputPointerTwo;
+        double* fChannelOne;
+        double* fChannelTwo;
 
         static const double sConversionFromVolts;
 };

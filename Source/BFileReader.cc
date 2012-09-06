@@ -6,21 +6,16 @@ using std::endl;
 
 #include <cstring>
 
-const double BFileReader::sConversionToVolts = 1. / 512.;
-
 BFileReader::BFileReader() :
     fFileName( "" ),
-    fRecordSize( 0 ),
+    fSize( 0 ),
+    fPeriod( 0. ),
     fMonarch( NULL ),
     fMonarchHeader( NULL ),
     fMonarchRecordOne( NULL ),
-    fRecordPointerOne( NULL ),
     fMonarchRecordTwo( NULL ),
-    fRecordPointerTwo( NULL ),
-    fOutputOne( NULL ),
-    fOutputPointerOne( NULL ),
-    fOutputTwo( NULL ),
-    fOutputPointerTwo( NULL )
+    fChannelOne( NULL ),
+    fChannelTwo( NULL )
 {
 }
 BFileReader::~BFileReader()
@@ -32,16 +27,16 @@ BFileReader::~BFileReader()
         fMonarch = NULL;
     }
 
-    if( fOutputOne != NULL )
+    if( fChannelOne != NULL )
     {
-        delete fOutputOne;
-        fOutputOne = NULL;
+        delete fChannelOne;
+        fChannelOne = NULL;
     }
 
-    if( fOutputTwo != NULL )
+    if( fChannelTwo != NULL )
     {
-        delete fOutputTwo;
-        fOutputTwo = NULL;
+        delete fChannelTwo;
+        fChannelTwo = NULL;
     }
 }
 
@@ -50,13 +45,22 @@ void BFileReader::SetFileName( const string& aFileName )
     fFileName = aFileName;
     return;
 }
-double* BFileReader::GetOutputOne()
+const size_t& BFileReader::GetSize()
 {
-    return fOutputOne;
+    return fSize;
 }
-double* BFileReader::GetOutputTwo()
+const double& BFileReader::GetPeriod()
 {
-    return fOutputTwo;
+    return fPeriod;
+}
+
+double* BFileReader::ChannelOne()
+{
+    return fChannelOne;
+}
+double* BFileReader::ChannelTwo()
+{
+    return fChannelTwo;
 }
 
 bool BFileReader::Initialize()
@@ -74,13 +78,14 @@ bool BFileReader::Initialize()
         cout << "[error] could not read header from egg file <" << fFileName << ">" << endl;
         return false;
     }
-
-    fRecordSize = fMonarchHeader->GetRecordSize();
-    fOutputOne = new double[ fRecordSize ];
-    fOutputTwo = new double[ fRecordSize ];
+    fSize = fMonarchHeader->GetRecordSize();
+    fPeriod = 1. / fMonarchHeader->GetAcqRate();
 
     fMonarchRecordOne = fMonarch->GetRecordOne();
     fMonarchRecordTwo = fMonarch->GetRecordTwo();
+
+    fChannelOne = new double[fSize];
+    fChannelTwo = new double[fSize];
 
     return true;
 }
@@ -91,15 +96,18 @@ bool BFileReader::Execute()
         return false;
     }
 
-    register const double tConversion = sConversionToVolts;
-    register const char* tRecordPointerOne = fMonarchRecordOne->fDataPtr;
-    register const char* tRecordPointerTwo = fMonarchRecordTwo->fDataPtr;
-    register double* tOutputPointerOne = fOutputOne;
-    register double* tOutputPointerTwo = fOutputTwo;
-    for( size_t tIndex = 0; tIndex < fRecordSize; tIndex++ )
+    register const char* tRecordOne = fMonarchRecordOne->fDataPtr;
+    register const char* tRecordTwo = fMonarchRecordTwo->fDataPtr;
+    register double* tChannelOne = fChannelOne;
+    register double* tChannelTwo = fChannelTwo;
+
+    register double tSlope = 1. / 508.;
+    register double tOffset = -.25 - .5 * tSlope;
+
+    for( size_t tIndex = 0; tIndex < fSize; tIndex++ )
     {
-        tOutputPointerOne[tIndex] = tRecordPointerOne[tIndex] * tConversion;
-        tOutputPointerTwo[tIndex] = tRecordPointerTwo[tIndex] * tConversion;
+        tChannelOne[tIndex] = tOffset + tRecordOne[tIndex] * tSlope;
+        tChannelTwo[tIndex] = tOffset + tRecordTwo[tIndex] * tSlope;
     }
 
     return true;

@@ -7,21 +7,16 @@ using std::endl;
 #include <cstring>
 #include <cmath>
 
-const double BFileWriter::sConversionFromVolts = 512.;
-
 BFileWriter::BFileWriter() :
     fFileName( "" ),
-    fRecordSize( 0 ),
+    fSize( 0 ),
+    fPeriod( 0. ),
     fMonarch( NULL ),
     fMonarchHeader( NULL ),
     fMonarchRecordOne( NULL ),
-    fRecordPointerOne( NULL ),
     fMonarchRecordTwo( NULL ),
-    fRecordPointerTwo( NULL ),
-    fInputOne( NULL ),
-    fInputPointerOne( NULL ),
-    fInputTwo( NULL ),
-    fInputPointerTwo( NULL )
+    fChannelOne( NULL ),
+    fChannelTwo( NULL )
 {
 }
 BFileWriter::~BFileWriter()
@@ -32,6 +27,17 @@ BFileWriter::~BFileWriter()
         delete fMonarch;
         fMonarch = NULL;
     }
+
+    if( fChannelOne != NULL )
+    {
+        delete[] fChannelOne;
+        fChannelOne = NULL;
+    }
+    if( fChannelTwo != NULL )
+    {
+        delete[] fChannelTwo;
+        fChannelTwo = NULL;
+    }
 }
 
 void BFileWriter::SetFileName( const string& aFileName )
@@ -39,20 +45,24 @@ void BFileWriter::SetFileName( const string& aFileName )
     fFileName = aFileName;
     return;
 }
-void BFileWriter::SetRecordSize( const size_t& aSize )
+void BFileWriter::SetSize( const size_t& aSize )
 {
-    fRecordSize = aSize;
+    fSize = aSize;
     return;
 }
-void BFileWriter::SetInputOne( double* anInput )
+void BFileWriter::SetPeriod( const double& aPeriod )
 {
-    fInputOne = anInput;
+    fPeriod = aPeriod;
     return;
 }
-void BFileWriter::SetInputTwo( double* anInput )
+
+double* BFileWriter::ChannelOne()
 {
-    fInputTwo = anInput;
-    return;
+    return fChannelOne;
+}
+double* BFileWriter::ChannelTwo()
+{
+    return fChannelTwo;
 }
 
 bool BFileWriter::Initialize()
@@ -65,11 +75,10 @@ bool BFileWriter::Initialize()
     }
 
     fMonarchHeader = fMonarch->GetHeader();
-    fMonarchHeader->SetRecordSize( fRecordSize );
-    fMonarchHeader->SetAcqMode( sTwoChannel );
-    fMonarchHeader->SetAcqRate( 500.0 );
     fMonarchHeader->SetAcqTime( 0 );
-
+    fMonarchHeader->SetAcqMode( sTwoChannel );
+    fMonarchHeader->SetRecordSize( fSize );
+    fMonarchHeader->SetAcqRate( 1.e-6 / fPeriod );
     if( fMonarch->WriteHeader() == false )
     {
         cout << "[error] could not write header to egg file <" << fFileName << ">" << endl;
@@ -77,20 +86,33 @@ bool BFileWriter::Initialize()
     }
 
     fMonarchRecordOne = fMonarch->GetRecordOne();
+    fMonarchRecordOne->fCId = 1;
+
     fMonarchRecordTwo = fMonarch->GetRecordTwo();
+    fMonarchRecordTwo->fCId = 2;
+
+    fChannelOne = new double[fSize];
+    memset( fChannelOne, 0, sizeof(double) * fSize );
+
+    fChannelTwo = new double[fSize];
+    memset( fChannelTwo, 0, sizeof(double) * fSize );
 
     return true;
 }
 bool BFileWriter::Execute()
 {
-    fRecordPointerOne = fMonarchRecordOne->fDataPtr;
-    fRecordPointerTwo = fMonarchRecordTwo->fDataPtr;
-    fInputPointerOne = fInputOne;
-    fInputPointerTwo = fInputTwo;
-    for( size_t tIndex = 0; tIndex < fRecordSize; tIndex++ )
+    register char* tRecordOne = fMonarchRecordOne->fDataPtr;
+    register char* tRecordTwo = fMonarchRecordTwo->fDataPtr;
+    register double* tChannelOne = fChannelOne;
+    register double* tChannelTwo = fChannelTwo;
+
+    register double tSlope = 508.;
+    register double tOffset = .25;
+
+    for( size_t tIndex = 0; tIndex < fSize; tIndex++ )
     {
-        fRecordPointerOne[tIndex] = (char) (round( sConversionFromVolts * fInputPointerOne[tIndex] ));
-        fRecordPointerTwo[tIndex] = (char) (round( sConversionFromVolts * fInputPointerTwo[tIndex] ));
+        tRecordOne[tIndex] = (char) (ceil( tSlope * (tChannelOne[tIndex] + tOffset) ));
+        tRecordOne[tIndex] = (char) (ceil( tSlope * (tChannelTwo[tIndex] + tOffset) ));
     }
 
     if( fMonarch->WriteRecord() == false )
@@ -98,5 +120,9 @@ bool BFileWriter::Execute()
         return false;
     }
 
+    memset( fChannelOne, 0, sizeof(double) * fSize );
+    memset( fChannelTwo, 0, sizeof(double) * fSize );
+
     return true;
 }
+

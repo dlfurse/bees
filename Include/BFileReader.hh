@@ -17,29 +17,24 @@ class BFileReader
         bool Initialize();
         bool Execute();
 
-        double* GetOutputOne();
-        double* GetOutputTwo();
+        const size_t& GetSize();
+        const double& GetPeriod();
+
+        double* ChannelOne();
+        double* ChannelTwo();
 
     private:
         string fFileName;
-        size_t fRecordSize;
+        size_t fSize;
+        double fPeriod;
 
         const Monarch* fMonarch;
         const MonarchHeader* fMonarchHeader;
-
         const MonarchRecord* fMonarchRecordOne;
-        const char* fRecordPointerOne;
-
         const MonarchRecord* fMonarchRecordTwo;
-        const char* fRecordPointerTwo;
 
-        double* fOutputOne;
-        double* fOutputPointerOne;
-
-        double* fOutputTwo;
-        double* fOutputPointerTwo;
-
-        static const double sConversionToVolts;
+        double* fChannelOne;
+        double* fChannelTwo;
 };
 
 #endif

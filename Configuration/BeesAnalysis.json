@@ -1,14 +1,11 @@
 {
     "#COMMENT": "input_file is the input file from the digitizer",
-    "input_file": "/data/chirps.egg",
+    "file": "./Bees.egg",
     
-    "#COMMENT": "analytic_associate_window is the window size used in computing the analytic associate",
-    "analytic_associate_window": "2097152",
-    
-    "#COMMENT": "wigner_ville_window is the size of the window used in computing the wigner-ville distribution",
-    "wigner_ville_window": "2097152",
-    
-    "#COMMENT": "step is the size in bytes the algorithm advances each step",
-    "step": "2097152"
+    "#COMMENT": "parameters for record-averaged short time discrete fourier transform",
+    "fourier":
+    {
+        "length": "131072"
+    }
 }
 

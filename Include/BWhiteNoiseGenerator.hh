@@ -16,9 +16,10 @@ class BWhiteNoiseGenerator
         BWhiteNoiseGenerator();
         virtual ~BWhiteNoiseGenerator();
 
-        void SetPower( const double& aValue );
+        void SetAmplitude( const double& aValue );
 
         void SetSize( const size_t& aSize );
+        void SetPeriod( const double& aPeriod );
         void SetOutputOne( double* anArray );
         void SetOutputTwo( double* anArray );
 
@@ -26,9 +27,10 @@ class BWhiteNoiseGenerator
         bool Execute();
 
     private:
-        double fPower;
+        double fAmplitude;
 
         size_t fSize;
+        double fPeriod;
         double* fOutputOne;
         double* fOutputTwo;
 

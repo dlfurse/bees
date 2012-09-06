@@ -1,0 +1,50 @@
+{
+    "#COMMENT": "output file name",
+    "file": "./Bees.egg",
+    
+    "#COMMENT": "number of records to produce",
+    "count": "1",
+    
+    "#COMMENT": "output frequency in MHz",
+    "frequency_MHz": "1024.0",
+    
+    "#COMMENT": "record size in MB",
+    "size_MB": "64",
+    
+    "#COMMENT": "noise parameters",
+    "noise":
+    {
+        "#COMMENT": "noise power in dBm",
+        "power_dBm": "-10"
+    },
+
+    "#COMMENT": "chirp parameters",
+    "chirp":
+    {    
+        "#COMMENT": "chirp power in dBm",
+        "power_dBm": "-10000",
+        
+        "#COMMENT": "chirp start frequency in MHz",
+        "start_MHz": "13.998",
+        
+        "#COMMENT": "chirp stop frequency in MHz",
+        "stop_MHz": "13.998",
+        
+        "#COMMENT": "chirp duration in ms",
+        "duration_ms": "1000.0",
+        
+        "#COMMENT": "chirp delay in ms",
+        "delay_ms": "0.0"
+    },
+    
+    "#COMMENT": "tone parameters",
+    "tone":
+    {    
+        "#COMMENT": "chirp power in dBm",
+        "power_dBm": "-7",
+        
+        "#COMMENT": "tone frequency in MHz",
+        "frequency_MHz": "9.8174"
+    }
+}
+

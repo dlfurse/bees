@@ -1,8 +1,17 @@
 #include "BWhiteNoiseGenerator.hh"
 
+#include <iostream>
+using std::cout;
+using std::endl;
+
 #include <cmath>
 
 BWhiteNoiseGenerator::BWhiteNoiseGenerator() :
+    fAmplitude( 0. ),
+    fSize( 0 ),
+    fPeriod( 0. ),
+    fOutputOne( NULL ),
+    fOutputTwo( NULL ),
     fTwistor(),
     fDistribution( NULL ),
     fGenerator( NULL )
@@ -23,15 +32,20 @@ BWhiteNoiseGenerator::~BWhiteNoiseGenerator()
     }
 }
 
-void BWhiteNoiseGenerator::SetPower( const double& aValue )
+void BWhiteNoiseGenerator::SetAmplitude( const double& aValue )
 {
-    fPower = aValue;
+    fAmplitude = aValue;
     return;
 }
 
 void BWhiteNoiseGenerator::SetSize( const size_t& aSize )
 {
     fSize = aSize;
+    return;
+}
+void BWhiteNoiseGenerator::SetPeriod( const double& aPeriod )
+{
+    fPeriod = aPeriod;
     return;
 }
 void BWhiteNoiseGenerator::SetOutputOne( double* anArray )
@@ -47,7 +61,7 @@ void BWhiteNoiseGenerator::SetOutputTwo( double* anArray )
 
 bool BWhiteNoiseGenerator::Initialize()
 {
-    fDistribution = new normal_distribution< double >( 0., sqrt( 50.0 * pow( 10., (fPower - 30.) / 10. ) ) );
+    fDistribution = new normal_distribution< double >( 0., fAmplitude );
     fGenerator = new variate_generator< mt19937&, normal_distribution< double > >( fTwistor, *fDistribution );
 
     return true;
@@ -56,8 +70,8 @@ bool BWhiteNoiseGenerator::Execute()
 {
     for( size_t tIndex = 0; tIndex < fSize; tIndex++ )
     {
-        fOutputOne[tIndex] = fGenerator->operator ()();
-        fOutputTwo[tIndex] = fGenerator->operator ()();
+        fOutputOne[tIndex] += fGenerator->operator ()();
+        fOutputTwo[tIndex] += fGenerator->operator ()();
     }
     return true;
 }
