@@ -8,14 +8,11 @@ using std::endl;
 
 BFileReader::BFileReader() :
     fFileName( "" ),
-    fSize( 0 ),
-    fPeriod( 0. ),
+    fAcquisitionFrequency( 0. ),
     fMonarch( NULL ),
     fMonarchHeader( NULL ),
     fMonarchRecordOne( NULL ),
-    fMonarchRecordTwo( NULL ),
-    fChannelOne( NULL ),
-    fChannelTwo( NULL )
+    fMonarchRecordTwo( NULL )
 {
 }
 BFileReader::~BFileReader()
@@ -26,57 +23,27 @@ BFileReader::~BFileReader()
         delete fMonarch;
         fMonarch = NULL;
     }
+}
 
-    if( fChannelOne != NULL )
+void BFileReader::Initialize()
+{
+    if( fOutputs[1]->GetSize() != fOutputs[2]->GetSize() )
     {
-        delete fChannelOne;
-        fChannelOne = NULL;
+        throw
     }
 
-    if( fChannelTwo != NULL )
-    {
-        delete fChannelTwo;
-        fChannelTwo = NULL;
-    }
-}
-
-void BFileReader::SetFileName( const string& aFileName )
-{
-    fFileName = aFileName;
-    return;
-}
-const size_t& BFileReader::GetSize()
-{
-    return fSize;
-}
-const double& BFileReader::GetPeriod()
-{
-    return fPeriod;
-}
-
-double* BFileReader::ChannelOne()
-{
-    return fChannelOne;
-}
-double* BFileReader::ChannelTwo()
-{
-    return fChannelTwo;
-}
-
-bool BFileReader::Initialize()
-{
     fMonarch = Monarch::OpenForReading( fFileName );
     if( fMonarch == NULL )
     {
         cout << "[error] could not open egg file <" << fFileName << ">" << endl;
-        return false;
+        return;
     }
 
     fMonarchHeader = fMonarch->GetHeader();
     if( fMonarch->ReadHeader() == false )
     {
         cout << "[error] could not read header from egg file <" << fFileName << ">" << endl;
-        return false;
+        return;
     }
     fSize = fMonarchHeader->GetRecordSize();
     fPeriod = 1. / fMonarchHeader->GetAcqRate();
@@ -84,12 +51,9 @@ bool BFileReader::Initialize()
     fMonarchRecordOne = fMonarch->GetRecordOne();
     fMonarchRecordTwo = fMonarch->GetRecordTwo();
 
-    fChannelOne = new double[fSize];
-    fChannelTwo = new double[fSize];
-
-    return true;
+    return;
 }
-bool BFileReader::Execute()
+void BFileReader::Execute()
 {
     if( fMonarch->ReadRecord() == false )
     {

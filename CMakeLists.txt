@@ -24,41 +24,34 @@ dmake_dependency_foreign_declare( FFTW3 1 0 0 )
 # bees library #
 ################
 
-dmake_library_declare( BeesCore . )
-dmake_library_headers( BeesCore
-    BFileWriter.hh
-    BToneGenerator.hh
-    BLinearChirpGenerator.hh
-    BWhiteNoiseGenerator.hh
-    BFileReader.hh
-    BFourierTransform.hh
+dmake_library_declare( BeesUtility Utility )
+dmake_library_headers( BeesUtility
+    BComplex.hh
+    BException.hh
 )
-dmake_library_sources( BeesCore
-    BFileWriter.cc
-    BToneGenerator.cc
-    BLinearChirpGenerator.cc
-    BWhiteNoiseGenerator.cc
-    BFileReader.cc
-    BFourierTransform.cc
+dmake_library_sources( BeesUtility
+    BComplex.cc
+    BException.cc
+)
+
+dmake_library_declare( BeesBase Base )
+dmake_library_headers( BeesBase
+    BComponent.hh
+    BData.hh
+    BProcessor.hh
+)
+dmake_library_sources( BeesBase
+    BComponent.cc
+    BData.cc
 )
 
 ####################
 # bees executables #
 ####################
 
-dmake_executable_declare( BeesSynthesis . )
-dmake_executable_sources( BeesSynthesis
-    BeesSynthesis.cc
-)
-
-dmake_executable_declare( BeesAnalysis . )
-dmake_executable_sources( BeesAnalysis
-    BeesAnalysis.cc
-)
-
-dmake_executable_declare( BeesDirect . )
-dmake_executable_sources( BeesDirect
-    BeesDirect.cc
+dmake_executable_declare( TestException Executables/Validation )
+dmake_executable_sources( TestException
+    TestException.cc
 )
 
 #####################
